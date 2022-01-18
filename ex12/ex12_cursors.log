@@ -1,0 +1,284 @@
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+--------------
+DROP TABLE IF EXISTS ex12_book_author
+--------------
+
+Query OK, 0 rows affected, 1 warning (0.000 sec)
+
+--------------
+DROP TABLE IF EXISTS ex12_book
+--------------
+
+Query OK, 0 rows affected, 1 warning (0.000 sec)
+
+--------------
+DROP TABLE IF EXISTS ex12_author
+--------------
+
+Query OK, 0 rows affected, 1 warning (0.000 sec)
+
+--------------
+CREATE TABLE ex12_book (
+   book_id INT AUTO_INCREMENT PRIMARY KEY,
+   ISBN CHAR(13) UNIQUE,
+   title VARCHAR(100) NOT NULL,
+   year INT NOT NULL,
+   type ENUM( 'PB', 'HC', 'TP', 'OT') NOT NULL DEFAULT 'TP',
+   kw1 VARCHAR(20),
+   kw2 VARCHAR(20),
+   kw3 VARCHAR(20),
+   kw4 VARCHAR(20)
+) ENGINE InnoDB
+--------------
+
+Query OK, 0 rows affected (0.022 sec)
+
+--------------
+ALTER TABLE ex12_book AUTO_INCREMENT = 10000
+--------------
+
+Query OK, 0 rows affected (0.002 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+--------------
+CREATE TABLE ex12_author (
+   ID INT PRIMARY KEY AUTO_INCREMENT,
+   last VARCHAR(100) NOT NULL,
+   middle VARCHAR(100),
+   first VARCHAR(100),
+   birthdate DATE
+) ENGINE InnoDB
+--------------
+
+Query OK, 0 rows affected (0.008 sec)
+
+--------------
+ALTER TABLE ex12_author AUTO_INCREMENT = 20000
+--------------
+
+Query OK, 0 rows affected (0.002 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+--------------
+CREATE TABLE ex12_book_author (
+   author_id INT,
+   book_id INT,
+   PRIMARY KEY (author_id, book_id)
+) ENGINE InnoDB
+--------------
+
+Query OK, 0 rows affected (0.007 sec)
+
+--------------
+ALTER TABLE ex12_book_author ADD CONSTRAINT 
+   FOREIGN KEY (author_id) REFERENCES ex12_author(ID)
+--------------
+
+Query OK, 0 rows affected (0.022 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+--------------
+ALTER TABLE ex12_book_author ADD CONSTRAINT 
+   FOREIGN KEY (book_id) REFERENCES ex12_book(book_id)
+--------------
+
+Query OK, 0 rows affected (0.025 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+--------------
+SHOW INDEXES FROM ex12_book
+--------------
+
++-----------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| Table     | Non_unique | Key_name | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment |
++-----------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| ex12_book |          0 | PRIMARY  |            1 | book_id     | A         |           0 |     NULL | NULL   |      | BTREE      |         |               |
+| ex12_book |          0 | ISBN     |            1 | ISBN        | A         |           0 |     NULL | NULL   | YES  | BTREE      |         |               |
++-----------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+2 rows in set (0.000 sec)
+
+--------------
+SHOW INDEXES FROM ex12_author
+--------------
+
++-------------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| Table       | Non_unique | Key_name | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment |
++-------------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| ex12_author |          0 | PRIMARY  |            1 | ID          | A         |           0 |     NULL | NULL   |      | BTREE      |         |               |
++-------------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+1 row in set (0.000 sec)
+
+--------------
+SHOW INDEXES FROM ex12_book_author
+--------------
+
++------------------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| Table            | Non_unique | Key_name | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment |
++------------------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| ex12_book_author |          0 | PRIMARY  |            1 | author_id   | A         |           0 |     NULL | NULL   |      | BTREE      |         |               |
+| ex12_book_author |          0 | PRIMARY  |            2 | book_id     | A         |           0 |     NULL | NULL   |      | BTREE      |         |               |
+| ex12_book_author |          1 | book_id  |            1 | book_id     | A         |           0 |     NULL | NULL   |      | BTREE      |         |               |
++------------------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+3 rows in set (0.000 sec)
+
+--------------
+CREATE INDEX ex12_book_title_idx ON ex12_book(title)
+--------------
+
+Query OK, 0 rows affected (0.006 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+--------------
+CREATE INDEX ex12_book_ISBN_idx ON ex12_book(ISBN)
+--------------
+
+Query OK, 0 rows affected (0.006 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+--------------
+CREATE INDEX ex12_author_first_idx ON ex12_author(first)
+--------------
+
+Query OK, 0 rows affected (0.006 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+--------------
+CREATE INDEX ex12_author_last_idx ON ex12_author(last)
+--------------
+
+Query OK, 0 rows affected (0.006 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+--------------
+CREATE INDEX ex12_author_middle_idx ON ex12_author(middle)
+--------------
+
+Query OK, 0 rows affected (0.006 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+--------------
+INSERT INTO ex12_author (last, middle, first, birthdate) VALUES 
+  ('Hoffer', 'A.', 'Jeffrey', NULL),
+  ('Ramesh', NULL, 'V.', NULL),
+  ('Topi', NULL, 'Heikki', NULL),
+  ('Vanderbilt', NULL, 'Tom', NULL),
+  ('Chomsky', NULL, 'Noam', NULL),
+  ('Meyer', NULL, 'Stephanie', NULL), 
+  ('Martin', NULL, 'Lawrence', NULL),
+  ('King', NULL, 'Thomas', NULL)
+--------------
+
+Query OK, 8 rows affected (0.002 sec)
+Records: 8  Duplicates: 0  Warnings: 0
+
+--------------
+INSERT INTO ex12_author (last, first) VALUES 
+  ('Zinn', 'Howard')
+--------------
+
+Query OK, 1 row affected (0.171 sec)
+
+--------------
+INSERT INTO ex12_book ( ISBN, title, year, type, kw1, kw2, kw3, kw4) VALUES 
+  ('9780136088394','Modern Database Management', 2011, 'HC', 'Computer', 'Database', NULL, NULL)
+--------------
+
+Query OK, 1 row affected (0.002 sec)
+
+--------------
+INSERT INTO ex12_book ( ISBN, title, year, kw1, kw2, kw3, kw4) VALUES 
+  ('9780307397737','Traffic', 2008, 'Cars', NULL, NULL, NULL)
+--------------
+
+Query OK, 1 row affected (0.001 sec)
+
+--------------
+INSERT INTO ex12_book ( ISBN, title, year, kw1, kw2, kw3, kw4) VALUES 
+  ('0805076883','Hegemony or Survival', 2003, 'Politics', 'World', 'Chomsky', NULL)
+--------------
+
+Query OK, 1 row affected (0.001 sec)
+
+--------------
+INSERT INTO ex12_book ( ISBN, title, year, type, kw1, kw2, kw3, kw4) VALUES 
+  (NULL,'Twilight', 2005, 'HC', 'Teen', 'Fiction', NULL, NULL)
+--------------
+
+Query OK, 1 row affected (0.001 sec)
+
+--------------
+INSERT INTO ex12_book ( ISBN, title, year, type, kw1, kw2, kw3, kw4) VALUES 
+  (NULL,'Harperland', 2010, 'TP', 'Politics', 'Canada', NULL, NULL)
+--------------
+
+Query OK, 1 row affected (0.001 sec)
+
+--------------
+INSERT INTO ex12_book ( ISBN, title, year, type, kw1, kw2, kw3, kw4) VALUES 
+  (NULL,'The Inconvenient Indian', 2012, 'HC', 'Politics', 'Canada', 'History','Aboriginal')
+--------------
+
+Query OK, 1 row affected (0.001 sec)
+
+--------------
+INSERT INTO ex12_book (title, ISBN, year, kw1) VALUES 
+  ('Zinn & the Art of Road Bike Maintenance', '1931382697', 2005, 'Bikes')
+--------------
+
+Query OK, 1 row affected (0.001 sec)
+
+--------------
+INSERT INTO ex12_book_author VALUES 
+(   (SELECT ID from ex12_author WHERE last = 'Martin'),
+    (SELECT book_id FROM ex12_book WHERE title LIKE 'Harper%') ),
+(   (SELECT ID from ex12_author WHERE last = 'King'),
+    (SELECT book_id FROM ex12_book WHERE title LIKE '%Indian%') ),
+(   (SELECT ID from ex12_author WHERE last = 'Hoffer'),
+    (SELECT book_id FROM ex12_book WHERE title LIKE 'Modern%') ),
+(   (SELECT ID from ex12_author WHERE last = 'Ramesh'),
+    (SELECT book_id FROM ex12_book WHERE title LIKE 'Modern%') ),
+(   (SELECT ID from ex12_author WHERE last = 'Topi'),
+    (SELECT book_id FROM ex12_book WHERE title LIKE 'Modern%') ),
+(   (SELECT ID from ex12_author WHERE last = 'Vanderbilt'),
+    (SELECT book_id FROM ex12_book WHERE title = 'Traffic') ),
+(   (SELECT ID from ex12_author WHERE last = 'Chomsky'),
+    (SELECT book_id FROM ex12_book WHERE title = 'Hegemony or Survival') ),
+(   (SELECT ID from ex12_author WHERE last = 'Meyer'),
+    (SELECT book_id FROM ex12_book WHERE title = 'Twilight') ),
+(   (SELECT ID FROM ex12_author WHERE last = 'Zinn'), 
+    (SELECT book_id FROM ex12_book WHERE title LIKE '%Bike%'))
+--------------
+
+Query OK, 9 rows affected (0.005 sec)
+Records: 9  Duplicates: 0  Warnings: 0
+
+--------------
+UPDATE ex12_author 
+  SET birthdate = '1928-12-7'
+  WHERE last = 'Chomsky'
+--------------
+
+Query OK, 1 row affected (0.001 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+--------------
+UPDATE ex12_book 
+  SET title = CONCAT(title, ': Why We Drive the Way We Do')
+  WHERE title = 'Traffic'
+--------------
+
+Query OK, 1 row affected (0.001 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+--------------
+CREATE OR REPLACE VIEW ex12_all_books AS
+SELECT b.title, b.year, b.ISBN, a.last, a.first 
+FROM ex12_book b JOIN ex12_book_author ba ON (b.book_id = ba.book_id) 
+     JOIN ex12_author a ON (ba.author_id = a.ID)
+--------------
+
+Query OK, 0 rows affected (0.001 sec)
+

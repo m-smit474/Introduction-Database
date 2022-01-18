@@ -1,0 +1,102 @@
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+--------------
+SELECT MAX(Sightings), MIN(Sightings), AVG(Sightings), STDDEV_SAMP(Sightings)
+FROM  (
+       SELECT dim_month AS Month, FORMAT(COUNT(*), 0) AS Sightings
+       FROM fact_ufo
+       JOIN dim_date ON(sighting_date = dim_date)
+       GROUP BY Month
+       ORDER BY dim_mon) AS months
+--------------
+
++----------------+----------------+-------------------+------------------------+
+| MAX(Sightings) | MIN(Sightings) | AVG(Sightings)    | STDDEV_SAMP(Sightings) |
++----------------+----------------+-------------------+------------------------+
+| 9,424          | 4,633          | 6.166666666666667 |     1.5859229221975182 |
++----------------+----------------+-------------------+------------------------+
+1 row in set, 24 warnings (0.206 sec)
+
+--------------
+SELECT MAX(Sightings)
+                   FROM (
+                         SELECT COUNT(*) AS Sightings
+                         FROM fact_ufo
+                         GROUP BY sighting_date) AS Sighting_By_Date
+--------------
+
++----------------+
+| MAX(Sightings) |
++----------------+
+|            201 |
++----------------+
+1 row in set (0.048 sec)
+
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+--------------
+SELECT COUNT(*) AS mountains, name AS continent, range_name
+FROM mountain_range
+JOIN mountain USING(range_id)
+JOIN continent ON(cont_id = range_continent)
+GROUP BY range_id
+ORDER BY mountains DESC, range_name
+--------------
+
++-----------+---------------+-----------------------+
+| mountains | continent     | range_name            |
++-----------+---------------+-----------------------+
+|        30 | North America | Selkirk Mountains     |
+|        14 | North America | Rocky Mountains       |
+|         8 | North America | Coast Mountains       |
+|         5 | Asia          | Himalaya              |
+|         3 | Asia          | Karakoram             |
+|         3 | North America | Purcell Mountains     |
+|         3 | Europe        | The Alps              |
+|         2 | North America | Cascade Mountains     |
+|         2 | South America | The Andes             |
+|         1 | North America | Alaska Range          |
+|         1 | North America | Appalachian Mountains |
+|         1 | Africa        | Atlas Mountains       |
+|         1 | Europe        | Caucasus              |
+|         1 | Antarctica    | Ellsworth Mountains   |
+|         1 | Africa        | Kilimanjaro           |
+|         1 | Australia     | Maoke Mountains       |
+|         1 | North America | Saint Elias Mountains |
++-----------+---------------+-----------------------+
+17 rows in set (0.001 sec)
+
+--------------
+SELECT 0 AS mountains, name AS continent, range_name
+FROM mountain_range
+JOIN mountain USING(range_id)
+JOIN continent ON(cont_id = range_continent)
+WHERE NOT EXISTS (
+      SELECT  COUNT(*) AS num_mountains
+      GROUP BY range_id )
+ORDER BY mountains DESC, range_name
+--------------
+
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'GROUP BY range_id )
+ORDER BY mountains DESC, range_name' at line 7
+--------------
+SELECT MAX(Average_Elevation) AS 'Asia'
+FROM (
+      SELECT AVG(elevation) AS Average_Elevation, name
+      FROM mountain
+      JOIN mountain_range USING(range_id)
+      JOIN continent ON(cont_id = range_continent)
+      GROUP BY name) AS elevations
+--------------
+
++-----------+
+| Asia      |
++-----------+
+| 8166.1250 |
++-----------+
+1 row in set (0.001 sec)
+

@@ -1,0 +1,25 @@
+1.
+
++-------------------+-------------+----------------------+-------------+----------+--------------------+--------------+--------+------------------+
+| Membership Number | Name        | Address              | Postal Code | District | Email              | Phone        | Type   | Notes            |
++-------------------+-------------+----------------------+-------------+----------+--------------------+--------------+--------+------------------+
+| 241               | Yehuda Moon | 222B Baker Street NW | T4R 1M7     | 12       | moon@kickstand.com | 403-200-5555 | Family | The Owner of ... |
+|                   |             |                      |             |          | yeduda@yahoo.com   |              |        |                  |
++-------------------+-------------+----------------------+-------------+----------+--------------------+--------------+--------+------------------+
+| 255               | John Doe    | 123 Orange Street NW | T4E 2B6     | 12       | John@Gmail.com     | 403-222-5555 | Friend | Professional BBQ |
++-------------------+-------------+----------------------+-------------+----------+--------------------+--------------+--------+------------------+
+
+2.
+Primary Key: Membership Number
+
+3.
+fd1: (Primary) Membership Number -> Name, Address, Postal Code, District, Email, Phone, Type, Notes
+fd2: (Transitive) Postal Code -> Address, District  Assumption: Postal codes uniquely identify an address
+
+4.
+Member(Membership Number, Name, Postal Code, Email, Phone, Type, Notes)
+Primary Key: Membership Number
+Foreign Key: Postal Code
+
+Address(Address, Postal Code, District)
+Primary Key: Postal Code

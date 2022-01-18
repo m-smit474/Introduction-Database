@@ -1,0 +1,215 @@
+Database changed
+--------------
+DROP TABLE IF EXISTS book
+--------------
+
+ERROR 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails
+--------------
+CREATE TABLE IF NOT EXISTS book (
+ISBN CHAR(11),
+title VARCHAR(100) NOT NULL,
+year INT NOT NULL,
+type ENUM('HC', 'PB', 'TP', 'OT'),
+CONSTRAINT book_pk PRIMARY KEY (ISBN)
+)
+ENGINE=InnoDB
+--------------
+
+Query OK, 0 rows affected, 1 warning (0.000 sec)
+
+--------------
+DROP TABLE IF EXISTS author
+--------------
+
+ERROR 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails
+--------------
+CREATE TABLE IF NOT EXISTS author (
+ID INT PRIMARY KEY AUTO_INCREMENT,
+name VARCHAR(50) NOT NULL,
+birthday DATE)
+ENGINE=InnoDB
+--------------
+
+Query OK, 0 rows affected, 1 warning (0.000 sec)
+
+--------------
+DROP TABLE IF EXISTS book_author
+--------------
+
+Query OK, 0 rows affected (0.007 sec)
+
+--------------
+CREATE TABLE IF NOT EXISTS book_author (
+ISBN CHAR(11),
+ID INT)
+ENGINE=InnoDB
+--------------
+
+Query OK, 0 rows affected (0.008 sec)
+
+--------------
+ALTER TABLE book_author
+ADD CONSTRAINT book_author_fk1 FOREIGN KEY (ISBN)
+REFERENCES book(ISBN)
+--------------
+
+Query OK, 0 rows affected (0.024 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+--------------
+ALTER TABLE book_author
+ADD CONSTRAINT book_author_fk2 FOREIGN KEY (ID)
+REFERENCES author(ID)
+--------------
+
+Query OK, 0 rows affected (0.028 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+--------------
+DROP TABLE IF EXISTS publisher
+--------------
+
+Query OK, 0 rows affected (0.005 sec)
+
+--------------
+CREATE TABLE IF NOT EXISTS publisher (
+ID INT PRIMARY KEY AUTO_INCREMENT,
+name VARCHAR(50) UNIQUE,
+address VARCHAR(100))
+ENGINE=InnoDB
+--------------
+
+Query OK, 0 rows affected (0.008 sec)
+
+--------------
+INSERT IGNORE INTO book (ISBN, title, year, type)
+VALUES
+       (01234567890, 'the book', 2021-02-02, 'PB'),
+       (01234567893, 'other book', 2031-02-02, 'PB'),
+       (01234567892, 'the nice book', 2001-02-02, 'PB'),
+       (01234567891, 'book', 2011-02-02, 'PB')
+--------------
+
+Query OK, 0 rows affected, 4 warnings (0.003 sec)
+Records: 4  Duplicates: 4  Warnings: 4
+
+--------------
+INSERT IGNORE INTO author (name, birthday)
+VALUES
+       ('John Clancy', 2021-02-02),
+       ('Plato', 2021-02-02),
+       ('Steve Jobs', 2021-02-02),
+       ('Phil Philips', 2021-02-02)
+--------------
+
+Query OK, 4 rows affected, 4 warnings (0.004 sec)
+Records: 4  Duplicates: 0  Warnings: 4
+
+--------------
+INSERT IGNORE INTO book_author (ISBN, ID)
+VALUES
+       (01234567890, 1),
+       (01234567891, 2)
+--------------
+
+Query OK, 2 rows affected (0.002 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+--------------
+CREATE OR REPLACE VIEW book_view AS
+       SELECT title, name
+       FROM book, author
+--------------
+
+Query OK, 0 rows affected (0.001 sec)
+
+--------------
+SELECT * FROM book_view
+--------------
+
++---------------+--------------+
+| title         | name         |
++---------------+--------------+
+| the book      | John Clancy  |
+| book          | John Clancy  |
+| the nice book | John Clancy  |
+| other book    | John Clancy  |
+| the book      | Plato        |
+| book          | Plato        |
+| the nice book | Plato        |
+| other book    | Plato        |
+| the book      | Steve Jobs   |
+| book          | Steve Jobs   |
+| the nice book | Steve Jobs   |
+| other book    | Steve Jobs   |
+| the book      | Phil Philips |
+| book          | Phil Philips |
+| the nice book | Phil Philips |
+| other book    | Phil Philips |
+| the book      | John Clancy  |
+| book          | John Clancy  |
+| the nice book | John Clancy  |
+| other book    | John Clancy  |
+| the book      | Plato        |
+| book          | Plato        |
+| the nice book | Plato        |
+| other book    | Plato        |
+| the book      | Steve Jobs   |
+| book          | Steve Jobs   |
+| the nice book | Steve Jobs   |
+| other book    | Steve Jobs   |
+| the book      | Phil Philips |
+| book          | Phil Philips |
+| the nice book | Phil Philips |
+| other book    | Phil Philips |
+| the book      | John Clancy  |
+| book          | John Clancy  |
+| the nice book | John Clancy  |
+| other book    | John Clancy  |
+| the book      | Plato        |
+| book          | Plato        |
+| the nice book | Plato        |
+| other book    | Plato        |
+| the book      | Steve Jobs   |
+| book          | Steve Jobs   |
+| the nice book | Steve Jobs   |
+| other book    | Steve Jobs   |
+| the book      | Phil Philips |
+| book          | Phil Philips |
+| the nice book | Phil Philips |
+| other book    | Phil Philips |
+| the book      | John Clancy  |
+| book          | John Clancy  |
+| the nice book | John Clancy  |
+| other book    | John Clancy  |
+| the book      | Plato        |
+| book          | Plato        |
+| the nice book | Plato        |
+| other book    | Plato        |
+| the book      | Steve Jobs   |
+| book          | Steve Jobs   |
+| the nice book | Steve Jobs   |
+| other book    | Steve Jobs   |
+| the book      | Phil Philips |
+| book          | Phil Philips |
+| the nice book | Phil Philips |
+| other book    | Phil Philips |
+| the book      | John Clancy  |
+| book          | John Clancy  |
+| the nice book | John Clancy  |
+| other book    | John Clancy  |
+| the book      | Plato        |
+| book          | Plato        |
+| the nice book | Plato        |
+| other book    | Plato        |
+| the book      | Steve Jobs   |
+| book          | Steve Jobs   |
+| the nice book | Steve Jobs   |
+| other book    | Steve Jobs   |
+| the book      | Phil Philips |
+| book          | Phil Philips |
+| the nice book | Phil Philips |
+| other book    | Phil Philips |
++---------------+--------------+
+80 rows in set (0.000 sec)
+

@@ -1,0 +1,31 @@
+1. Normalization is needed to reduce inconsitencies and anomolies in our
+data. We want a common scale without distorting or changing the data.
+
+2. A functional dependency is a set of values that will uniquely identify
+another set of values (ie sin -> name,address,etc.)
+
+3.
+(a) A will privide B and C
+(b) Yes they are true, because given A we can get B and C, so we can get B or C
+independently.
+
+4.
+(a) Provided D and E, we will get F
+(b) No, because we need both D AND F not just 1.
+
+5.
+(a) Yes because each intersection has a single value, No duplicate rows, and each column has a unique name.
+(b) Student ID
+(c)
+fd1: (Transitive) DormName -> Cost
+fd2: (Partial) StudentID -> LastName, FirstName, DormName, Cost
+(d) Account(StudentID, LastName, Firstname, DormName)
+Primary Key: StudentID
+Foreign Key: DormName
+DormName(Cost)
+Primary Key: Cost
+
+6.
+(a) Attorney, ClientNumber and Date
+fd1: Attorney, ClientNumber Date -> ClientName, Duration
+

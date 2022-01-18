@@ -1,0 +1,9 @@
+
+
+class(Title (P), Description, Section_Number(F->Section:Section_Number))
+
+section(Section_Number (P), Instructor, Room(F->Room:Room_Number), Time, Duration)
+
+room(Room_Number (P), Capacity, Building)
+
+student(Name, Email_Address, Address)

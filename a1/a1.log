@@ -1,0 +1,381 @@
+Database changed
+--------------
+SELECT NOW()
+--------------
+
++---------------------+
+| NOW()               |
++---------------------+
+| 2021-10-10 22:25:18 |
++---------------------+
+1 row in set (0.000 sec)
+
+--------------
+SELECT FORMAT(COUNT(*), '#,#') AS "Number of Sightings",
+       MIN(sighting_date) AS "Staring from", MAX(sighting_date) AS "Ending on"
+FROM fact_ufo
+--------------
+
++---------------------+--------------+------------+
+| Number of Sightings | Staring from | Ending on  |
++---------------------+--------------+------------+
+| 79,637              | 1906-11-11   | 2014-05-08 |
++---------------------+--------------+------------+
+1 row in set, 1 warning (0.021 sec)
+
+--------------
+SELECT FORMAT(COUNT(DISTINCT city), '#,#') AS "Different cities with sightings"
+FROM fact_ufo
+--------------
+
++---------------------------------+
+| Different cities with sightings |
++---------------------------------+
+| 19,853                          |
++---------------------------------+
+1 row in set, 1 warning (0.191 sec)
+
+--------------
+SELECT city, COUNT(*) AS sightings
+FROM fact_ufo
+GROUP BY city
+ORDER BY sightings DESC
+LIMIT 20
+--------------
+
++-------------------+-----------+
+| city              | sightings |
++-------------------+-----------+
+| seattle           |       519 |
+| phoenix           |       449 |
+| portland          |       369 |
+| las vegas         |       368 |
+| los angeles       |       350 |
+| san diego         |       332 |
+| houston           |       295 |
+| chicago           |       262 |
+| miami             |       237 |
+| tucson            |       237 |
+| orlando           |       217 |
+| austin            |       216 |
+| springfield       |       213 |
+| albuquerque       |       211 |
+| sacramento        |       200 |
+| columbus          |       198 |
+| london uk/england |       189 |
+| san jose          |       188 |
+| san francisco     |       186 |
+| denver            |       185 |
++-------------------+-----------+
+20 rows in set (2.081 sec)
+
+--------------
+SELECT city, COUNT(*) AS sightings
+FROM fact_ufo
+GROUP BY city
+HAVING sightings >= 100
+--------------
+
++------------------------+-----------+
+| city                   | sightings |
++------------------------+-----------+
+| albuquerque            |       211 |
+| arlington              |       141 |
+| auburn                 |       134 |
+| austin                 |       216 |
+| boise                  |       109 |
+| charlotte              |       146 |
+| chicago                |       262 |
+| cincinnati             |       103 |
+| colorado springs       |       127 |
+| columbia               |       143 |
+| columbus               |       198 |
+| dallas                 |       158 |
+| denver                 |       185 |
+| everett                |       100 |
+| fresno                 |       107 |
+| houston                |       295 |
+| indianapolis           |       134 |
+| jackson                |       105 |
+| jacksonville           |       172 |
+| kansas city            |       120 |
+| lancaster              |       104 |
+| las vegas              |       368 |
+| london uk/england      |       189 |
+| los angeles            |       350 |
+| louisville             |       137 |
+| madison                |       113 |
+| mesa                   |       137 |
+| miami                  |       237 |
+| myrtle beach           |       165 |
+| nashville              |       113 |
+| new york city          |       115 |
+| new york city brooklyn |       143 |
+| omaha                  |       116 |
+| orlando                |       217 |
+| philadelphia           |       106 |
+| phoenix                |       449 |
+| pittsburgh             |       107 |
+| portland               |       369 |
+| reno                   |       111 |
+| richmond               |       135 |
+| rochester              |       125 |
+| rockford               |       112 |
+| sacramento             |       200 |
+| salem                  |       152 |
+| salt lake city         |       123 |
+| san antonio            |       173 |
+| san diego              |       332 |
+| san francisco          |       186 |
+| san jose               |       188 |
+| scottsdale             |       107 |
+| seattle                |       519 |
+| spokane                |       128 |
+| springfield            |       213 |
+| st. louis              |       130 |
+| tacoma                 |       124 |
+| tampa                  |       126 |
+| tinley park            |       102 |
+| toronto canada         |       172 |
+| tucson                 |       237 |
+| vancouver              |       136 |
+| wilmington             |       101 |
++------------------------+-----------+
+61 rows in set (1.901 sec)
+
+--------------
+SELECT IF(zodiac="", "Missing", zodiac) AS zodiac, COUNT(*) AS sightings
+FROM fact_ufo, dim_date
+WHERE sighting_date = dim_date
+GROUP BY zodiac
+ORDER BY sightings DESC
+--------------
+
++-------------+-----------+
+| zodiac      | sightings |
++-------------+-----------+
+| Cancer      |      9962 |
+| Leo         |      8517 |
+| Virgo       |      7855 |
+| Gemini      |      7180 |
+| Libra       |      7088 |
+| Scorpio     |      7045 |
+| Capricorn   |      5814 |
+| Taurus      |      5526 |
+| Sagittarius |      5287 |
+| Pisces      |      5285 |
+| Aries       |      5161 |
+| Aquarius    |      4812 |
+| Missing     |       105 |
++-------------+-----------+
+13 rows in set, 1 warning (0.105 sec)
+
+--------------
+SELECT dim_month AS month, FORMAT(COUNT(*), '#,#') AS sightings
+FROM fact_ufo, dim_date
+WHERE sighting_date = dim_date
+GROUP BY month
+ORDER BY month
+--------------
+
++-----------+-----------+
+| month     | sightings |
++-----------+-----------+
+| APRIL     | 5,464     |
+| AUGUST    | 8,561     |
+| DECEMBER  | 5,630     |
+| FEBRUARY  | 4,633     |
+| JANUARY   | 5,652     |
+| JULY      | 9,424     |
+| JUNE      | 8,092     |
+| MARCH     | 5,373     |
+| MAY       | 5,244     |
+| NOVEMBER  | 6,690     |
+| OCTOBER   | 7,332     |
+| SEPTEMBER | 7,542     |
++-----------+-----------+
+12 rows in set, 24 warnings (0.201 sec)
+
+--------------
+SELECT COUNT(DISTINCT comments) AS Total,
+       MIN(LENGTH(comments)) AS "Minimum Size",
+       MAX(LENGTH(comments)) AS "Maximum Size",
+       AVG(LENGTH(comments)) AS "Average Size"
+FROM fact_ufo
+WHERE TRIM(comments)
+  AND LENGTH(comments) > 0
+--------------
+
++-------+--------------+--------------+--------------+
+| Total | Minimum Size | Maximum Size | Average Size |
++-------+--------------+--------------+--------------+
+|  5952 |            1 |          704 |      79.6268 |
++-------+--------------+--------------+--------------+
+1 row in set, 65535 warnings (0.183 sec)
+
+--------------
+SELECT COUNT(DISTINCT comments) AS "Number of mentions of fire balls"
+FROM fact_ufo
+WHERE comments LIKE "%fire ball%"
+--------------
+
++----------------------------------+
+| Number of mentions of fire balls |
++----------------------------------+
+|                              270 |
++----------------------------------+
+1 row in set (0.082 sec)
+
+--------------
+SELECT time_of_day, COUNT(*) AS "Sightings in Vancouver"
+FROM fact_ufo, dim_time, dim_date
+WHERE city = "Vancouver"
+  AND sighting_date = dim_date
+  AND sighting_time = dim_time
+GROUP BY time_of_day
+ORDER BY time_of_day = "Morning", time_of_day = "Afternoon",
+         time_of_day = "Evening", time_of_day ="Night"
+--------------
+
++-------------+------------------------+
+| time_of_day | Sightings in Vancouver |
++-------------+------------------------+
+| Night       |                     18 |
+| Evening     |                     90 |
+| Afternoon   |                     17 |
+| Morning     |                     11 |
++-------------+------------------------+
+4 rows in set (0.044 sec)
+
+--------------
+SELECT COUNT(IF(latitude > 0, 1, null)) AS "Northern Hemisphere",
+       COUNT(IF(latitude <= 0, 1, null)) AS "Southern Hemisphere"
+FROM fact_ufo
+--------------
+
++---------------------+---------------------+
+| Northern Hemisphere | Southern Hemisphere |
++---------------------+---------------------+
+|               78559 |                1078 |
++---------------------+---------------------+
+1 row in set (0.038 sec)
+
+--------------
+SELECT city, dim_state.state, country,
+       CONCAT(SUBSTRING(comments, 1, 20), '...') AS Comments,
+       CONCAT(latitude, ', ', longitude) AS "Decimal"
+FROM fact_ufo, dim_state
+WHERE latitude IS NOT NULL
+  AND longitude IS NOT NULL
+  AND latitude != 0
+  AND longitude != 0
+  AND fact_ufo.state = dim_state.state_id
+LIMIT 100
+--------------
+
++----------------------------------+-------+---------+-------------------------+----------------------------+
+| city                             | state | country | Comments                | Decimal                    |
++----------------------------------+-------+---------+-------------------------+----------------------------+
+| wien austria                     | XX    | AA      | The oldest professio... | 48.20817400, 16.37381900   |
+| kirksville near                  | MO    | US      | Historical sighting ... | 40.19472220, -92.58305560  |
+| wills point                      | TX    | US      | Cigar shaped object ... | 32.70916670, -96.00805560  |
+| france above; from aircraft      | XX    | FR      | NUFORC Note:  Possib... | 46.22763800, 2.21374900    |
+| cicero                           | IN    | US      | NUFORC Note:  Probab... | 40.12388890, -86.01333330  |
+| atkinson 6 miles north of        | IL    | US      | Young boy witnesses ... | 41.42083330, -90.01500000  |
+| buchanan  or burns               | OR    | US      | we were traveling ea... | 43.64250000, -118.62750000 |
+| ithaca/freeville                 | NY    | US      | Very Large TriangleS... | 42.50916700, -76.39380400  |
+| holyoke 6-8 miles southwest of   | CO    | US      | In the winter of 193... | 40.58444440, -102.30194440 |
+| abilene                          | KS    | US      | This is a what my mo... | 38.91722220, -97.21361110  |
+| new york worlds fair             | NY    | US      | The object seemed to... | 40.75994100, -73.84916800  |
+| valley city 6.5 miles east of    | ND    | US      | Two brothers observe... | 46.92333330, -98.00277780  |
+| albany canada                    | PE    | CA      | I WAS PLAYING AT MY ... | 52.25000000, -81.61666700  |
+| eklutna                          | AK    | US      | Two men approached b... | 61.45805560, -149.36222220 |
+| hubbard                          | OR    | US      | It had a bluish tint... | 45.18250000, -122.80666670 |
+| fontana                          | CA    | US      | A cylinder light cam... | 34.09222220, -117.43416670 |
+| waterloo                         | AL    | US      | 4 high school studen... | 34.91805560, -88.06416670  |
+| belton                           | SC    | US      | Dark red arched acro... | 34.52277780, -82.49444440  |
+| keokuk                           | IA    | US      | Mother sees UFO abov... | 40.39722220, -91.38472220  |
+| ludington hamlin lake            | MI    | US      | As a boy some 60 plu... | 43.95527780, -86.45250000  |
+| hapeville                        | GA    | US      | bright object approc... | 33.66000000, -84.41027780  |
+| oneida                           | TN    | US      | Two children walking... | 36.49805560, -84.51277780  |
+| fiji islands s. pacific ocean    | XX    | XX      | Crew contingents of ... | -18.00000000, 178.00000000 |
+| bering sea                       | AK    | US      | 1943 sighting of fou... | 59.67036700, -139.85908200 |
+| nebraska                         | NE    | US      | My 94 yr. old grandm... | 41.49253700, -99.90181300  |
+| norfolk/sizewell uk/england      | XX    | UK      | observin  mans warfa... | 36.85076900, -76.28587300  |
+| france over&#44 somewhere        | XX    | FR      | lightnext to my b-17... | 46.22763800, 2.21374900    |
+| portsmouth uk/england            | XX    | GB      | vertical lines of 5-... | 50.79670000, -1.08333300   |
+| unknown                          | LA    | US      | 1942    Louisiana   ... | 37.24544300, -107.82783900 |
+| unknown                          | LA    | US      | White light at midni... | 37.24544300, -107.82783900 |
+| owensboro                        | KY    | US      | Low-flying silver ob... | 37.77416670, -87.11333330  |
+| san diego                        | CA    | US      | A sighting of one si... | 32.71527780, -117.15638890 |
+| clovis                           | NM    | US      | Saw UFO in 1944 over... | 34.40472220, -103.20472220 |
+| saanich canada                   | BC    | CA      | THREE DISCS.IN TRIAN... | 48.45926300, -123.37672200 |
+| los alamos                       | NM    | US      | Disk hovers over Los... | 35.88805560, -106.30638890 |
+| penuela puerto rico              | XX    | US      | This happened when I... | 18.86464100, -96.89288300  |
+| france                           | XX    | FR      | I was part of the 8t... | 46.22763800, 2.21374900    |
+| ft. duschene near                | UT    | US      | Woman&#44 20s&#44 se... | 40.28801600, -109.85459000 |
+| south kingstown                  | RI    | US      | This event was relat... | 41.44756900, -71.52466700  |
+| north tampa                      | FL    | US      | A black cylindrical ... | 28.04351400, -82.44684000  |
+| pacific ocean                    | XX    | XX      | April&#44 1945 I saw... | -8.78319500, -124.50852300 |
+| salinas afb                      | CA    | US      | ufos belong to te US... | 36.76069300, -121.76573500 |
+| jasper                           | FL    | US      | I belived it would b... | 30.51805560, -82.94833330  |
+| winston-salem                    | NC    | US      | I always thought thi... | 36.09972220, -80.24444440  |
+| portsmouth                       | VA    | US      | 1945  RED  FLICKERIN... | 36.83527780, -76.29861110  |
+| dallas                           | TX    | US      | A round ball of fire... | 32.78333330, -96.80000000  |
+| huntington beach                 | CA    | US      | MY DAD SAYS HIS AUNT... | 33.66027780, -117.99833330 |
+| san antonio                      | NM    | US      | THE CRAFT APPEARED T... | 33.91777780, -106.86527780 |
+| roswell                          | NM    | US      | Sphere in Roswell. W... | 33.39416670, -104.52250000 |
+| new york city brooklyn           | NY    | US      | Huge round silver di... | 40.71416670, -74.00638890  |
+| merced                           | CA    | US      | Three luminescent ch... | 37.30222220, -120.48194440 |
+| alice                            | TX    | US      | An extremey noisy di... | 27.75194440, -98.06944440  |
+| burnaby canada                   | BC    | CA      | I was six at the tim... | 49.25000000, -122.95000000 |
+| blairsden                        | CA    | US      | Looked up and saw sp... | 39.78111110, -120.61555560 |
+| index                            | WA    | US      | Greenish fireball fl... | 47.82083330, -121.55388890 |
+| south portland                   | ME    | US      | motionless&#44 dark ... | 43.64138890, -70.24138890  |
+| oak lawn                         | IL    | US      | V-formation 5 silver... | 41.71083330, -87.75805560  |
+| dome                             | AZ    | US      | observed sudden&#44v... | 32.75527780, -114.36138890 |
+| yokohama japan                   | XX    | JP      | This is a follow-on ... | 35.44370800, 139.63802600  |
+| manama bahrain                   | XX    | BH      | Slow  moving circula... | 26.21666700, 50.58333300   |
+| conroe                           | TX    | US      | The date was early 1... | 30.31166670, -95.45583330  |
+| yokahama japan                   | XX    | JP      | The Flying Object ov... | 35.44370800, 139.63802600  |
+| syracuse                         | NY    | US      | 1947-Chance observat... | 43.04805560, -76.14777780  |
+| miami north of                   | FL    | US      | A GLOWING METALLIC O... | 25.77388890, -80.19388890  |
+| san deigo                        | CA    | US      | The craft was V shap... | 32.71573800, -117.16108400 |
+| minden                           | LA    | US      | High altitude sigtin... | 32.61527780, -93.28666670  |
+| cleveland                        | OH    | US      | It was about 2:15 in... | 41.49944440, -81.69555560  |
+| espanola outside of              | NM    | US      | Saucer shaped object... | 35.99111110, -106.08000000 |
+| oroville                         | CA    | US      | I was only six&#44 b... | 39.51388890, -121.55527780 |
+| oakmont                          | PA    | US      | a very brillant blue... | 40.52166670, -79.84250000  |
+| winona aprox.20 mi.north west of | MN    | US      | 2 unmoving round obj... | 44.05000000, -91.63916670  |
+| gackle                           | ND    | US      | Alien hawk sighted i... | 46.62583330, -99.14166670  |
+| madison                          | WI    | US      | Three  disks appear ... | 43.07305560, -89.40111110  |
+| hayward                          | CA    | US      | We where very close ... | 37.66888890, -122.07972220 |
+| baltimore                        | MD    | US      | I wasn&#39t the oly ... | 39.29027780, -76.61250000  |
+| cashmere                         | WA    | US      | THE SIGHTING.&#9;It ... | 47.52250000, -120.46861110 |
+| wexford                          | PA    | US      | I have told this to ... | 40.62638890, -80.05611110  |
+| maywood                          | CA    | US      | 1947 UFO sighting Da... | 33.98666670, -118.18444440 |
+| seattle                          | WA    | US      | While walking in Woo... | 47.60638890, -122.33083330 |
+| philadelphia                     | PA    | US      | Six craft observed t... | 39.95222220, -75.16416670  |
+| johnston city                    | IL    | US      | I was only 13 at the... | 37.82055560, -88.92750000  |
+| roswell                          | NM    | US      | Information...          | 33.39416670, -104.52250000 |
+| syracuse                         | NY    | US      | WHILE LOOKING OUT TH... | 43.04805560, -76.14777780  |
+| richmond                         | CA    | US      | THIS  SIGHTING TOOK ... | 37.93583330, -122.34666670 |
+| las vegas east of                | NV    | US      | On July 15&#44 1947 ... | 36.17500000, -115.13638890 |
+| keeneyville                      | IL    | US      | A burning particle f... | 41.96750000, -88.12027780  |
+| clintwood                        | VA    | US      | In July 1947 my Dad ... | 37.15000000, -82.45611110  |
+| hazelton northeast of            | ID    | US      | The Object was Huge&... | 42.59638890, -114.13527780 |
+| minneapolis                      | MN    | US      | July 1947 around 5 p... | 44.98000000, -93.26361110  |
+| morehouse                        | MO    | US      | Looked like airplane... | 36.84722220, -89.68527780  |
+| san jose                         | CA    | US      | The object seen that... | 37.33944440, -121.89388890 |
+| raton/des moines                 | NM    | US      | The object followed ... | 36.58977800, -103.61401400 |
+| green valley                     | WI    | US      | White lights 5 to 7&... | 44.79555560, -88.27027780  |
+| saranac lake                     | NY    | US      | 6-7 Disc shaped obje... | 44.32944440, -74.13166670  |
+| proctor                          | OK    | US      | cigar-shaped&#44 no ... | 35.96611110, -94.77722220  |
+| whitmore lake                    | MI    | US      | Dec. 24&#44 1947 cig... | 42.43944440, -83.74388890  |
+| scipio                           | IN    | US      | Round red glowing ba... | 39.07916670, -85.71750000  |
+| napan canada                     | NB    | CA      | while working on the... | 47.00617400, -65.42088000  |
+| borger                           | TX    | US      | Dull silver disk fly... | 35.66777780, -101.39694440 |
+| baltimore                        | MD    | US      | Two UFO;S  in flight... | 39.29027780, -76.61250000  |
++----------------------------------+-------+---------+-------------------------+----------------------------+
+100 rows in set (0.001 sec)
+

@@ -1,0 +1,54 @@
+MariaDB [msmit474]> \. ~/2521/ex2/ex2.sql
+--------------
+SELECT first_name, last_name, nick_name FROM castaway
+--------------
+
++------------+-----------+--------------+
+| first_name | last_name | nick_name    |
++------------+-----------+--------------+
+| Gilligan   | NULL      | Little Buddy |
+| Mary Ann   | Summers   | NULL         |
+| Ginger     | Grant     | NULL         |
+| Jonas      | Grumby    | Skipper      |
+| Eunice     | Howell    | Lovey        |
+| Roy        | Hinkley   | Professor    |
+| Thurston   | Howell    | Mr. Howell   |
++------------+-----------+--------------+
+7 rows in set (0.001 sec)
+
+--------------
+SELECT COUNT(*) FROM hut
+--------------
+
++----------+
+| COUNT(*) |
++----------+
+|        8 |
++----------+
+1 row in set (0.000 sec)
+
+--------------
+SELECT COUNT(*) AS huts FROM hut
+--------------
+
++------+
+| huts |
++------+
+|    8 |
++------+
+1 row in set (0.000 sec)
+
+--------------
+SELECT * FROM hut WHERE hut_bunks > 2
+--------------
+
++--------+----------------+--------------------------+-----------+-----------------+------------------+
+| hut_id | hut_name       | hut_location             | hut_bunks | hut_floor_space | constructed_date |
++--------+----------------+--------------------------+-----------+-----------------+------------------+
+|    500 | Howell Heights | On the hill, with a view |         4 |          1600.0 | 1966-07-09       |
+|    900 | Rideau Hall    | Admidst the gardens      |        16 |          4500.0 | 1968-07-15       |
+|    950 | Friar Park     | Henley on Thames         |       120 |          1000.0 | 1875-06-15       |
++--------+----------------+--------------------------+-----------+-----------------+------------------+
+3 rows in set (0.000 sec)
+
+MariaDB [msmit474]> 

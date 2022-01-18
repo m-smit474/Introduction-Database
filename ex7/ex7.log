@@ -1,0 +1,177 @@
+Database changed
+--------------
+SELECT empl.employee_id, empl.last_name , empl.phone_number,
+       man.first_name AS Manager, man.phone_number
+FROM employee AS empl JOIN employee AS man ON(man.employee_id = empl.manager_id)
+ORDER BY empl.employee_id
+--------------
+
++-------------+-----------+--------------+---------+--------------+
+| employee_id | last_name | phone_number | Manager | phone_number |
++-------------+-----------+--------------+---------+--------------+
+|         202 | Kern      | 8722         | Susan   | 3484         |
+|         203 | Woods     | 7591         | Susan   | 3484         |
+|         204 | Owens     | 6830         | Jim     | 8722         |
+|         205 | Perkins   | 5286         | Jim     | 8722         |
+|         207 | Smith     | 2259         | Martha  | 7591         |
+|         208 | Campbell  | 1752         | Martha  | 7591         |
+|         209 | Jacobs    | 3357         | Susan   | 3484         |
+|         210 | Hoffman   | 2974         | Martha  | 7591         |
++-------------+-----------+--------------+---------+--------------+
+8 rows in set (0.001 sec)
+
+--------------
+SELECT empl.employee_id, empl.last_name , empl.phone_number, department_name,
+       man.first_name AS Manager, man.phone_number
+FROM employee AS empl
+JOIN employee AS man ON(man.employee_id = empl.manager_id)
+JOIN department ON(department.dept_code = empl.dept_code)
+ORDER BY empl.employee_id
+--------------
+
++-------------+-----------+--------------+-----------------+---------+--------------+
+| employee_id | last_name | phone_number | department_name | Manager | phone_number |
++-------------+-----------+--------------+-----------------+---------+--------------+
+|         202 | Kern      | 8722         | Sales           | Susan   | 3484         |
+|         203 | Woods     | 7591         | Shipping        | Susan   | 3484         |
+|         204 | Owens     | 6830         | Sales           | Jim     | 8722         |
+|         205 | Perkins   | 5286         | Sales           | Jim     | 8722         |
+|         207 | Smith     | 2259         | Shipping        | Martha  | 7591         |
+|         208 | Campbell  | 1752         | Shipping        | Martha  | 7591         |
+|         209 | Jacobs    | 3357         | Marketing       | Susan   | 3484         |
+|         210 | Hoffman   | 2974         | Sales           | Martha  | 7591         |
++-------------+-----------+--------------+-----------------+---------+--------------+
+8 rows in set (0.000 sec)
+
+--------------
+SELECT empl.employee_id, empl.last_name , empl.phone_number, department_name,
+       man.first_name AS Manager, man.phone_number
+FROM employee AS empl
+LEFT JOIN employee AS man ON(man.employee_id = empl.manager_id)
+JOIN department ON(department.dept_code = empl.dept_code)
+ORDER BY empl.employee_id
+--------------
+
++-------------+-----------+--------------+-----------------+---------+--------------+
+| employee_id | last_name | phone_number | department_name | Manager | phone_number |
++-------------+-----------+--------------+-----------------+---------+--------------+
+|         201 | Brown     | 3484         | Executive       | NULL    | NULL         |
+|         202 | Kern      | 8722         | Sales           | Susan   | 3484         |
+|         203 | Woods     | 7591         | Shipping        | Susan   | 3484         |
+|         204 | Owens     | 6830         | Sales           | Jim     | 8722         |
+|         205 | Perkins   | 5286         | Sales           | Jim     | 8722         |
+|         206 | Rose      | NULL         | Accounting      | NULL    | NULL         |
+|         207 | Smith     | 2259         | Shipping        | Martha  | 7591         |
+|         208 | Campbell  | 1752         | Shipping        | Martha  | 7591         |
+|         209 | Jacobs    | 3357         | Marketing       | Susan   | 3484         |
+|         210 | Hoffman   | 2974         | Sales           | Martha  | 7591         |
++-------------+-----------+--------------+-----------------+---------+--------------+
+10 rows in set (0.000 sec)
+
+--------------
+SELECT empl.employee_id, empl.last_name , empl.phone_number, department_name,
+       man.first_name AS Manager, man.phone_number
+FROM employee AS empl
+JOIN employee AS man ON(man.employee_id = empl.manager_id)
+JOIN department ON(department.dept_code = empl.dept_code)
+--------------
+
++-------------+-----------+--------------+-----------------+---------+--------------+
+| employee_id | last_name | phone_number | department_name | Manager | phone_number |
++-------------+-----------+--------------+-----------------+---------+--------------+
+|         209 | Jacobs    | 3357         | Marketing       | Susan   | 3484         |
+|         202 | Kern      | 8722         | Sales           | Susan   | 3484         |
+|         204 | Owens     | 6830         | Sales           | Jim     | 8722         |
+|         205 | Perkins   | 5286         | Sales           | Jim     | 8722         |
+|         210 | Hoffman   | 2974         | Sales           | Martha  | 7591         |
+|         203 | Woods     | 7591         | Shipping        | Susan   | 3484         |
+|         207 | Smith     | 2259         | Shipping        | Martha  | 7591         |
+|         208 | Campbell  | 1752         | Shipping        | Martha  | 7591         |
++-------------+-----------+--------------+-----------------+---------+--------------+
+8 rows in set (0.000 sec)
+
+--------------
+SELECT empl2.employee_id, empl2.last_name , empl2.phone_number, department_name,
+       man.first_name AS Manager, man.phone_number
+FROM employee AS empl2
+LEFT JOIN employee AS man ON(man.employee_id = empl2.manager_id)
+JOIN department ON(department.dept_code = empl2.dept_code)
+WHERE man.first_name IS NULL
+ORDER BY empl2.employee_id
+--------------
+
++-------------+-----------+--------------+-----------------+---------+--------------+
+| employee_id | last_name | phone_number | department_name | Manager | phone_number |
++-------------+-----------+--------------+-----------------+---------+--------------+
+|         201 | Brown     | 3484         | Executive       | NULL    | NULL         |
+|         206 | Rose      | NULL         | Accounting      | NULL    | NULL         |
++-------------+-----------+--------------+-----------------+---------+--------------+
+2 rows in set (0.000 sec)
+
+--------------
+SELECT COUNT(DISTINCT lunch_id) AS 'Lunches Attended', last_name, first_name
+FROM lunch
+JOIN employee USING(employee_id)
+WHERE 'Lunches Attended' < 5
+GROUP BY lunch.employee_id
+--------------
+
++------------------+-----------+------------+
+| Lunches Attended | last_name | first_name |
++------------------+-----------+------------+
+|                3 | Brown     | Susan      |
+|                1 | Kern      | Jim        |
+|                2 | Woods     | Martha     |
+|                2 | Owens     | Ellen      |
+|                2 | Perkins   | Henry      |
+|                2 | Smith     | Dan        |
+|                2 | Campbell  | Fred       |
+|                2 | Hoffman   | Nancy      |
++------------------+-----------+------------+
+8 rows in set, 1 warning (0.000 sec)
+
+--------------
+SELECT one.employee_id, one.last_name, one.first_name,
+       two.employee_id, two.last_name, two.first_name
+FROM employee AS one
+JOIN employee AS two USING(hire_date)
+WHERE one.employee_id != two.employee_id
+--------------
+
++-------------+-----------+------------+-------------+-----------+------------+
+| employee_id | last_name | first_name | employee_id | last_name | first_name |
++-------------+-----------+------------+-------------+-----------+------------+
+|         204 | Owens     | Ellen      |         201 | Brown     | Susan      |
+|         201 | Brown     | Susan      |         204 | Owens     | Ellen      |
++-------------+-----------+------------+-------------+-----------+------------+
+2 rows in set (0.000 sec)
+
+--------------
+SELECT one.employee_id, one.last_name, one.first_name,
+       two.employee_id, two.last_name, two.first_name
+FROM employee AS one, employee AS two
+WHERE one.employee_id != two.employee_id
+  AND one.hire_date = (
+      SELECT two.hire_date)
+--------------
+
++-------------+-----------+------------+-------------+-----------+------------+
+| employee_id | last_name | first_name | employee_id | last_name | first_name |
++-------------+-----------+------------+-------------+-----------+------------+
+|         204 | Owens     | Ellen      |         201 | Brown     | Susan      |
+|         201 | Brown     | Susan      |         204 | Owens     | Ellen      |
++-------------+-----------+------------+-------------+-----------+------------+
+2 rows in set (0.000 sec)
+
+--------------
+SELECT COUNT(DISTINCT lunch_id) AS 'Max Number of Lunches'
+FROM lunch
+--------------
+
++-----------------------+
+| Max Number of Lunches |
++-----------------------+
+|                    16 |
++-----------------------+
+1 row in set (0.000 sec)
+
